@@ -1,21 +1,34 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Bot, ClipboardList, FileText, Gauge, Search, ShieldCheck, Siren } from 'lucide-react';
+import {
+  Bot,
+  ClipboardList,
+  FileText,
+  Gauge,
+  PlayCircle,
+  RefreshCw,
+  Search,
+  ShieldCheck,
+  Siren,
+} from 'lucide-react';
 import type React from 'react';
 import { useEffect, useMemo } from 'react';
 import { AlertQueue } from './alert-queue';
 import { AssistantPanel } from './assistant-panel';
 import { AuditPanel } from './audit-panel';
 import { CasePanel } from './case-panel';
+import { DemoPanel } from './demo-panel';
 import { MetricTile } from './metric-tile';
 import { ReportPanel } from './report-panel';
+import { Button } from '@/components/ui/button';
 import { Tabs } from '@/components/ui/tabs';
 import { listAlerts, listAuditLogs, listInvestigations } from '@/lib/api';
 import { DashboardTab, useDashboardStore } from '@/store/dashboard-store';
 
 const tabs = [
   { value: 'case', label: 'Caso', icon: <ClipboardList className="h-4 w-4" /> },
+  { value: 'demo', label: 'Demo', icon: <PlayCircle className="h-4 w-4" /> },
   { value: 'assistant', label: 'Assistente', icon: <Bot className="h-4 w-4" /> },
   { value: 'report', label: 'Relatorio', icon: <FileText className="h-4 w-4" /> },
   { value: 'audit', label: 'Auditoria', icon: <ShieldCheck className="h-4 w-4" /> },
@@ -88,6 +101,10 @@ export function DashboardShell() {
   }, [alerts, investigations]);
 
   function renderActivePanel() {
+    if (activeTab === 'demo') {
+      return <DemoPanel alert={selectedAlert} investigation={selectedInvestigation} />;
+    }
+
     if (activeTab === 'assistant') {
       return <AssistantPanel investigation={selectedInvestigation} />;
     }
@@ -123,9 +140,23 @@ export function DashboardShell() {
                 Centro de investigacao
               </h1>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-muted-foreground shadow-sm">
-              <Search className="h-4 w-4" />
-              API local ou fallback mockado
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-muted-foreground shadow-sm">
+                <Search className="h-4 w-4" />
+                API local ou fallback mockado
+              </div>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  void alertsQuery.refetch();
+                  void investigationsQuery.refetch();
+                  void auditQuery.refetch();
+                }}
+                type="button"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Recarregar
+              </Button>
             </div>
           </header>
 

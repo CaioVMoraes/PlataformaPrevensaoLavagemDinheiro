@@ -54,7 +54,7 @@ export class ChatbotService {
         },
         {
           name: 'Normas internas',
-          origin: 'business-rules.md#BR-008',
+          origin: '.ai/business-rules.md#BR-008',
         },
       ],
       humanDecisionRequired: true,

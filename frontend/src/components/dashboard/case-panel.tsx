@@ -31,7 +31,7 @@ export function CasePanel({
           <div>
             <h2 className="text-lg font-semibold">{alert.customer.name}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {alert.customer.cpf} · {alert.customer.account}
+              {alert.customer.cpf} - {alert.customer.account}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">

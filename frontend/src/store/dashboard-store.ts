@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type DashboardTab = 'case' | 'assistant' | 'report' | 'audit';
+export type DashboardTab = 'case' | 'demo' | 'assistant' | 'report' | 'audit';
 
 interface DashboardStore {
   selectedAlertId: string | null;

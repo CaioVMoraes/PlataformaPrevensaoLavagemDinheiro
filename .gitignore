@@ -1,14 +1,57 @@
-# Common ignores
-node_modules
-.next/
-.DS_Store
-.npm-cache
-package-lock.json
+# Dependencies
+node_modules/
+frontend/node_modules/
 
-# Local editor/system files
+# Build outputs
+dist/
+coverage/
+frontend/.next/
+frontend/out/
+frontend/coverage/
+frontend/.vercel/
+
+# Local caches
+.npm-cache/
+.eslintcache
+*.tsbuildinfo
+frontend/*.tsbuildinfo
+frontend/.turbo/
+
+# Environment files
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime artifacts
+*.pid
+*.seed
+*.local
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
 .idea/
 .vscode/
-Thumbs.db
- 
-expo-env.d.ts
-# @end expo-cli
+*.swp
+*.swo
+
+# AI workspace context
+.ai/*
+!.ai/*.md
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.cache/

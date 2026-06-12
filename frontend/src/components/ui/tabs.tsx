@@ -17,7 +17,7 @@ export function Tabs<TValue extends string>({
   onChange: (value: TValue) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-1 rounded-md border border-border bg-muted p-1 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-1 rounded-md border border-border bg-muted p-1 sm:grid-cols-5">
       {items.map((item) => (
         <button
           className={cn(

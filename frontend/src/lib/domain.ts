@@ -14,6 +14,12 @@ export interface ApiSuccessResponse<TData> {
   data: TData;
 }
 
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  code: string;
+}
+
 export interface CustomerView {
   id: string;
   name: string;
