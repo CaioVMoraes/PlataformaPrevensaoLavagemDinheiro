@@ -1,0 +1,14 @@
+# Common ignores
+node_modules
+.next/
+.DS_Store
+.npm-cache
+package-lock.json
+
+# Local editor/system files
+.idea/
+.vscode/
+Thumbs.db
+ 
+expo-env.d.ts
+# @end expo-cli

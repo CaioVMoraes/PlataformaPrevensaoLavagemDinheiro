@@ -1,0 +1,26 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppModule = void 0;
+const common_1 = require("@nestjs/common");
+const audit_module_1 = require("./modules/audit/audit.module");
+const chatbot_module_1 = require("./modules/chatbot/chatbot.module");
+const health_controller_1 = require("./modules/health/health.controller");
+const investigations_module_1 = require("./modules/investigations/investigations.module");
+const reports_module_1 = require("./modules/reports/reports.module");
+const alerts_module_1 = require("./modules/alerts/alerts.module");
+let AppModule = class AppModule {
+};
+exports.AppModule = AppModule;
+exports.AppModule = AppModule = __decorate([
+    (0, common_1.Module)({
+        imports: [audit_module_1.AuditModule, alerts_module_1.AlertsModule, investigations_module_1.InvestigationsModule, chatbot_module_1.ChatbotModule, reports_module_1.ReportsModule],
+        controllers: [health_controller_1.HealthController],
+    })
+], AppModule);
+//# sourceMappingURL=app.module.js.map
