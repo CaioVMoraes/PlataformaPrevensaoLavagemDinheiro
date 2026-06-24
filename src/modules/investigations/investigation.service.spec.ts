@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { AnalystRole } from '../../shared/domain/analyst-role';
 import { AlertRepository } from '../alerts/alert.repository';
+import { AlertService } from '../alerts/alert.service';
 import { AuditRepository } from '../audit/audit.repository';
 import { AuditService } from '../audit/audit.service';
 import { InvestigationRepository } from './investigation.repository';
@@ -8,10 +9,15 @@ import { InvestigationService } from './investigation.service';
 
 describe('InvestigationService', () => {
   function createService(): InvestigationService {
+    const alertRepository = new AlertRepository();
+    const auditRepository = new AuditRepository();
+    const auditService = new AuditService(auditRepository);
+    const alertService = new AlertService(alertRepository, auditService);
+
     return new InvestigationService(
       new InvestigationRepository(),
-      new AlertRepository(),
-      new AuditService(new AuditRepository()),
+      alertService,
+      auditService,
     );
   }
 

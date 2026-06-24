@@ -1,14 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Alert } from '../../shared/domain/alert';
 import { AuditEventType } from '../../shared/domain/audit-event-type';
 import { AuditService } from '../audit/audit.service';
 import { AlertView, presentAlert } from './alert.presenter';
-import { AlertRepository } from './alert.repository';
+import { ALERT_REPOSITORY_TOKEN, IAlertRepository } from './alert.repository.interface';
 import { UpdateAlertStatusDto } from './dto/update-alert-status.dto';
 
 @Injectable()
 export class AlertService {
   constructor(
-    private readonly alertRepository: AlertRepository,
+    @Inject(ALERT_REPOSITORY_TOKEN)
+    private readonly alertRepository: IAlertRepository,
     private readonly auditService: AuditService,
   ) {}
 
@@ -17,14 +19,7 @@ export class AlertService {
   }
 
   getAlert(alertId: string): AlertView {
-    const alert = this.alertRepository.findById(alertId);
-
-    if (!alert) {
-      throw new NotFoundException({
-        message: 'Alert not found',
-        code: 'ALERT_NOT_FOUND',
-      });
-    }
+    const alert = this.findAlertOrThrow(alertId);
 
     this.auditService.register({
       user: 'local-api',
@@ -40,15 +35,7 @@ export class AlertService {
   }
 
   updateStatus(alertId: string, input: UpdateAlertStatusDto): AlertView {
-    const currentAlert = this.alertRepository.findById(alertId);
-
-    if (!currentAlert) {
-      throw new NotFoundException({
-        message: 'Alert not found',
-        code: 'ALERT_NOT_FOUND',
-      });
-    }
-
+    const currentAlert = this.findAlertOrThrow(alertId);
     const updatedAlert = this.alertRepository.updateStatus(alertId, input.status);
 
     if (!updatedAlert) {
@@ -71,5 +58,20 @@ export class AlertService {
     });
 
     return presentAlert(updatedAlert);
+  }
+
+  findAlertById(alertId: string): Alert | null {
+    return this.alertRepository.findById(alertId);
+  }
+
+  private findAlertOrThrow(alertId: string): Alert {
+    const alert = this.alertRepository.findById(alertId);
+    if (!alert) {
+      throw new NotFoundException({
+        message: 'Alert not found',
+        code: 'ALERT_NOT_FOUND',
+      });
+    }
+    return alert;
   }
 }

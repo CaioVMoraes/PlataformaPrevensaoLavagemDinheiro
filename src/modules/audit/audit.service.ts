@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AuditEventType } from '../../shared/domain/audit-event-type';
 import { AuditLog } from '../../shared/database/mock-data';
-import { AuditRepository } from './audit.repository';
+import { AUDIT_REPOSITORY_TOKEN, IAuditRepository } from './audit.repository.interface';
 
 export interface RegisterAuditInput {
   user: string;
@@ -13,7 +13,10 @@ export interface RegisterAuditInput {
 
 @Injectable()
 export class AuditService {
-  constructor(private readonly auditRepository: AuditRepository) {}
+  constructor(
+    @Inject(AUDIT_REPOSITORY_TOKEN)
+    private readonly auditRepository: IAuditRepository,
+  ) {}
 
   listAuditLogs(): AuditLog[] {
     return this.auditRepository.findAll();

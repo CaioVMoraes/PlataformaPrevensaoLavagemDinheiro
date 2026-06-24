@@ -1,17 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { AuditEventType } from '../../shared/domain/audit-event-type';
 import { AuditLog, mockedAuditLogs } from '../../shared/database/mock-data';
-
-export interface CreateAuditLogInput {
-  user: string;
-  action: AuditEventType;
-  resource: string;
-  result: 'SUCCESS' | 'ERROR';
-  metadata: Record<string, string>;
-}
+import { CreateAuditLogInput, IAuditRepository } from './audit.repository.interface';
 
 @Injectable()
-export class AuditRepository {
+export class AuditRepository implements IAuditRepository {
   private readonly auditLogs: AuditLog[] = [...mockedAuditLogs];
 
   findAll(): AuditLog[] {
@@ -22,7 +14,7 @@ export class AuditRepository {
 
   create(input: CreateAuditLogInput): AuditLog {
     const auditLog: AuditLog = {
-      id: `AUD-${3000 + this.auditLogs.length + 1}`,
+      id: `AUD-${String(3000 + this.auditLogs.length + 1)}`,
       occurredAt: new Date().toISOString(),
       ...input,
     };

@@ -14,7 +14,7 @@ export class ChatbotService {
 
   answerQuestion(input: ChatbotQueryDto): ChatbotAnswer {
     const investigation = this.investigationService.getInvestigation(input.investigationId);
-    const totalAmount = investigation.alert.reason.includes('fracionadas')
+    const alertReasonSnippet = investigation.alert.reason.includes('fracionadas')
       ? 'ha indagacao sobre fracionamento operacional'
       : 'ha volume financeiro superior ao perfil esperado';
 
@@ -34,7 +34,7 @@ export class ChatbotService {
       question: input.question,
       answer:
         `A investigacao ${investigation.id} possui risco sugerido ` +
-        `${investigation.suggestedRisk}. Pelo contexto mockado, ${totalAmount}.`,
+        `${investigation.suggestedRisk}. Pelo contexto mockado, ${alertReasonSnippet}.`,
       suggestedRisk: investigation.suggestedRisk,
       evidences: investigation.evidences,
       justification:

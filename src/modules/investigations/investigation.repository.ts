@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Investigation } from '../../shared/domain/investigation';
 import { InvestigationStatus } from '../../shared/domain/investigation-status';
 import { mockedInvestigations } from '../../shared/database/mock-data';
+import { IInvestigationRepository } from './investigation.repository.interface';
 
 @Injectable()
-export class InvestigationRepository {
+export class InvestigationRepository implements IInvestigationRepository {
   private readonly investigations: Investigation[] = mockedInvestigations.map((investigation) =>
     this.cloneInvestigation(investigation),
   );
@@ -15,7 +16,6 @@ export class InvestigationRepository {
 
   findById(investigationId: string): Investigation | null {
     const investigation = this.investigations.find((candidate) => candidate.id === investigationId);
-
     return investigation ? this.cloneInvestigation(investigation) : null;
   }
 
