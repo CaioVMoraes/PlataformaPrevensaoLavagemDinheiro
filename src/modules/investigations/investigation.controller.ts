@@ -1,30 +1,35 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiSuccessResponse, successResponse } from '../../shared/http/api-response';
 import { CloseInvestigationDto } from './dto/close-investigation.dto';
+import { InvestigationClientService } from './investigation.client.service';
 import { InvestigationView } from './investigation.presenter';
-import { InvestigationService } from './investigation.service';
 
 @Controller('investigations')
 export class InvestigationController {
-  constructor(private readonly investigationService: InvestigationService) {}
+  constructor(private readonly investigationClientService: InvestigationClientService) {}
 
   @Get()
-  listInvestigations(): ApiSuccessResponse<InvestigationView[]> {
-    return successResponse(this.investigationService.listInvestigations());
+  async listInvestigations(): Promise<ApiSuccessResponse<InvestigationView[]>> {
+    // API HTTP -> microservice call boundary.
+    return successResponse(await this.investigationClientService.listInvestigations());
   }
 
   @Get(':investigationId')
-  getInvestigation(
+  async getInvestigation(
     @Param('investigationId') investigationId: string,
-  ): ApiSuccessResponse<InvestigationView> {
-    return successResponse(this.investigationService.getInvestigation(investigationId));
+  ): Promise<ApiSuccessResponse<InvestigationView>> {
+    return successResponse(
+      await this.investigationClientService.getInvestigation(investigationId),
+    );
   }
 
   @Post(':investigationId/close')
-  closeInvestigation(
+  async closeInvestigation(
     @Param('investigationId') investigationId: string,
     @Body() input: CloseInvestigationDto,
-  ): ApiSuccessResponse<InvestigationView> {
-    return successResponse(this.investigationService.closeInvestigation(investigationId, input));
+  ): Promise<ApiSuccessResponse<InvestigationView>> {
+    return successResponse(
+      await this.investigationClientService.closeInvestigation(investigationId, input),
+    );
   }
 }
