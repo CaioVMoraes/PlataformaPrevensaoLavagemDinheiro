@@ -1,102 +1,184 @@
-# PLD
+# PLD Investigation Platform
 
-Projeto local para demonstrar um fluxo de investigacao PLD com backend NestJS, frontend Next.js e dados mockados. A aplicacao cobre alertas, investigacoes, consulta assistida, relatorios e auditoria.
+Plataforma full-stack para demonstrar um fluxo de Prevencao a Lavagem de Dinheiro (PLD), desde a triagem do alerta ate a conclusao auditavel da investigacao. O projeto combina uma API NestJS, uma interface Next.js e dados inteiramente mockados para permitir execucao local sem infraestrutura externa.
 
-## Estrutura
+> Projeto academico e demonstrativo. Nenhum dado pessoal ou transacional real e utilizado.
 
-```txt
+## Visao geral
+
+A aplicacao foi desenhada para apoiar a analise de alertas PLD e demonstrar regras de dominio que normalmente estariam distribuidas entre sistemas bancarios, mecanismos antifraude e ferramentas de compliance.
+
+Principais recursos:
+
+- fila de alertas com classificacao de risco e status operacional;
+- visualizacao de cliente, transacoes e evidencias relacionadas;
+- mascaramento de CPF e conta bancaria nas respostas da API;
+- atualizacao de status com justificativa e registro de auditoria;
+- encerramento de investigacoes sujeito a papel, evidencias e revisao do relatorio;
+- assistente mockado com sugestao de risco, justificativa, evidencias e fontes;
+- geracao de relatorio e historico auditavel das operacoes;
+- fallback local no frontend para demonstracao visual sem a API.
+
+## Arquitetura
+
+```text
+Navegador
+    |
+    v
+Frontend Next.js :3001
+    |
+    v
+API NestJS :3000
+    |
+    +-- Alerts
+    +-- Investigations
+    +-- Chatbot
+    +-- Reports
+    +-- Audit
+    `-- Repositories em memoria
+```
+
+O backend segue uma organizacao modular. Controllers definem os endpoints, services aplicam as regras de negocio, presenters protegem o formato de saida e repositories isolam o acesso aos dados mockados. O frontend separa contratos de dominio, acesso a API, estado remoto, estado de interface e componentes visuais.
+
+## Tecnologias
+
+| Camada      | Tecnologias                                                 |
+| ----------- | ----------------------------------------------------------- |
+| Backend     | Node.js 22+, TypeScript 5, NestJS 11, Class Validator       |
+| Frontend    | React 19, Next.js 16, Tailwind CSS, TanStack Query, Zustand |
+| Componentes | Radix Slot, Lucide React, Class Variance Authority          |
+| Qualidade   | Jest, Supertest, ESLint, Prettier                           |
+| Dados       | Repositories em memoria com fixtures TypeScript             |
+
+As versoes e bibliotecas permitidas estao detalhadas em [`.ai/tech-stack.md`](.ai/tech-stack.md).
+
+## Estrutura do repositorio
+
+```text
 PLD/
-|-- .ai/
-|   |-- architecture-decisions.md
-|   |-- business-rules.md
-|   |-- standards.md
-|   `-- tech-stack.md
+|-- .ai/                         # Padroes, ADRs, stack e regras de negocio
 |-- src/
-|   |-- modules/
-|   `-- shared/
-|-- test/
+|   |-- modules/                 # Modulos funcionais da API
+|   `-- shared/                  # Dominio, HTTP, seguranca e dados mockados
+|-- test/                        # Testes de ponta a ponta
 |-- frontend/
-|   |-- src/
-|   `-- scripts/
-|-- package.json
+|   |-- src/app/                 # App Router e estilos globais
+|   |-- src/components/          # Interface e componentes reutilizaveis
+|   |-- src/lib/                 # API, dominio, formatadores e mocks
+|   `-- src/store/               # Estado local com Zustand
+|-- DOCUMENTACAO.md              # Documentacao concisa da entrega
+|-- package.json                 # Scripts e dependencias do backend
 `-- README.md
 ```
 
-## Documentacao
+## Pre-requisitos
 
-Os arquivos em `.ai/` sao a referencia do projeto:
+- Node.js 22 ou superior;
+- npm 10 ou superior;
+- portas `3000` e `3001` disponiveis.
 
-- `.ai/standards.md`: convencoes de codigo, API, logs, testes e seguranca.
-- `.ai/architecture-decisions.md`: decisoes de arquitetura e ADRs.
-- `.ai/tech-stack.md`: stack permitida para backend, frontend, IA, banco e observabilidade.
-- `.ai/business-rules.md`: regras de negocio do dominio PLD.
+## Instalacao
 
-## Stack
-
-Backend:
-
-- Node.js 22+
-- TypeScript 5+
-- NestJS 11+
-- Class Validator
-- Jest e Supertest
-
-Frontend:
-
-- React 19+
-- Next.js 16.2.9, dentro da regra `Next.js 15+`
-- TailwindCSS
-- Componentes no estilo Shadcn/UI
-- TanStack Query
-- Zustand
-
-## Instalar
-
-Na raiz do projeto:
+Instale as dependencias do backend na raiz:
 
 ```bash
 npm install
 ```
 
-No frontend:
+Instale as dependencias do frontend:
 
 ```bash
 cd frontend
 npm install
 ```
 
-No Windows, se o terminal nao encontrar `npm` ou `node`, use antes:
+No Windows, caso `node` ou `npm` nao estejam no `PATH`:
 
 ```powershell
 $env:Path = 'C:\Program Files\nodejs;' + $env:Path
 ```
 
-## Executar Localmente
+## Execucao local
 
-Terminal 1, backend:
+Inicie o backend em um terminal:
 
 ```bash
 npm run start:dev
 ```
 
-API: `http://localhost:3000`
+A API ficara disponivel em [http://localhost:3000](http://localhost:3000). O health check pode ser consultado em [http://localhost:3000/health](http://localhost:3000/health).
 
-Terminal 2, frontend:
+Em outro terminal, inicie o frontend:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-Interface: `http://localhost:3001`
+A interface ficara disponivel em [http://localhost:3001](http://localhost:3001).
 
-## Validar Build
+## Roteiro de demonstracao
+
+1. Selecione `ALT-1001` e consulte cliente, transacoes e evidencias na aba `Caso`.
+2. Na aba `Demo`, altere o status do alerta e informe uma justificativa.
+3. Encerre `INV-5001`; o caso possui evidencias, papel autorizado e relatorio revisado.
+4. Selecione `ALT-1002` e tente encerrar `INV-5002`; a API deve responder com `REPORT_NOT_REVIEWED`.
+5. Na aba `Assistente`, envie uma pergunta e confira evidencias, justificativa e fontes.
+6. Gere o relatorio da investigacao e consulte os eventos na aba `Auditoria`.
+
+As alteracoes ficam em memoria enquanto a API estiver ativa. Ao reiniciar o backend, os dados retornam ao estado inicial.
+
+## API
+
+| Metodo  | Endpoint                                 | Finalidade                                        |
+| ------- | ---------------------------------------- | ------------------------------------------------- |
+| `GET`   | `/health`                                | Verificar disponibilidade e uso de dados mockados |
+| `GET`   | `/alerts`                                | Listar alertas com dados sensiveis mascarados     |
+| `GET`   | `/alerts/:alertId`                       | Consultar um alerta e registrar a consulta        |
+| `PATCH` | `/alerts/:alertId/status`                | Atualizar status com justificativa e auditoria    |
+| `GET`   | `/investigations`                        | Listar investigacoes                              |
+| `GET`   | `/investigations/:investigationId`       | Consultar uma investigacao completa               |
+| `POST`  | `/investigations/:investigationId/close` | Encerrar uma investigacao elegivel                |
+| `POST`  | `/chatbot/query`                         | Consultar o assistente de apoio                   |
+| `GET`   | `/reports/:investigationId`              | Gerar o relatorio mockado                         |
+| `GET`   | `/audit`                                 | Consultar o historico de auditoria                |
+
+Respostas de sucesso seguem o contrato:
+
+```json
+{
+  "success": true,
+  "data": {}
+}
+```
+
+Erros possuem mensagem legivel e codigo estavel:
+
+```json
+{
+  "success": false,
+  "message": "Report must be reviewed before closing the investigation",
+  "code": "REPORT_NOT_REVIEWED"
+}
+```
+
+## Testes e qualidade
+
+O projeto possui quatro testes unitarios e cinco testes de ponta a ponta. A suite integrada sobe uma instancia isolada da aplicacao para cada cenario e cobre disponibilidade, mascaramento, regras de encerramento, transparencia do assistente e auditoria.
 
 Backend:
 
 ```bash
+npm run lint
+npm run test:all
 npm run build
+```
+
+Para executar as suites separadamente:
+
+```bash
 npm test
+npm run test:e2e
 ```
 
 Frontend:
@@ -107,143 +189,29 @@ npm run lint
 npm run build
 ```
 
-## Como Testar Pelo Frontend
+## Regras de negocio demonstradas
 
-Abra `http://localhost:3001`.
+- CPF e conta bancaria nunca sao expostos sem mascaramento.
+- O assistente sugere uma classificacao, mas nao toma a decisao final.
+- Respostas do assistente incluem evidencias, justificativa e origem.
+- Uma investigacao exige papel autorizado, evidencias e relatorio revisado para ser encerrada.
+- Consultas e alteracoes relevantes geram eventos de auditoria.
 
-1. Selecione `ALT-1001` na fila de alertas.
-2. Abra a aba `Caso` para ver cliente, CPF/conta mascarados, transacoes e evidencias.
-3. Abra a aba `Demo` e altere o status para `COMPLETED`, `FALSE_POSITIVE` ou `REGULATORY_ESCALATION`.
-4. Ainda em `Demo`, clique em `Encerrar caso` com `ALT-1001` selecionado. Esse caso deve fechar porque possui evidencias e relatorio revisado.
-5. Selecione `ALT-1002` e tente `Encerrar caso`. Esse fluxo deve mostrar erro `REPORT_NOT_REVIEWED`, demonstrando a regra de negocio.
-6. Abra a aba `Assistente`, envie uma pergunta e confira evidencias, justificativa e fontes.
-7. Abra a aba `Relatorio` para gerar o relatorio mockado da investigacao selecionada.
-8. Abra a aba `Auditoria` para conferir eventos gerados por consultas e alteracoes.
+## Documentacao tecnica
 
-Observacao: o frontend possui fallback mockado para visualizacao quando o backend nao esta rodando. Para demonstrar persistencia, auditoria e regras reais da API, rode o backend em `http://localhost:3000`.
+- [`DOCUMENTACAO.md`](DOCUMENTACAO.md): descricao concisa do projeto e da entrega;
+- [`.ai/architecture-decisions.md`](.ai/architecture-decisions.md): decisoes de arquitetura;
+- [`.ai/business-rules.md`](.ai/business-rules.md): regras do dominio PLD;
+- [`.ai/standards.md`](.ai/standards.md): convencoes de codigo, testes e seguranca;
+- [`.ai/tech-stack.md`](.ai/tech-stack.md): tecnologias e versoes permitidas.
 
-## Como Testar Pela API
+## Limitacoes conhecidas
 
-Health check:
+- os dados sao volateis e reiniciados com o processo do backend;
+- o assistente usa respostas deterministicas, sem integracao com um modelo externo;
+- autenticacao, autorizacao persistente e banco de dados nao fazem parte deste prototipo;
+- o frontend possui fallback mockado para manter a demonstracao navegavel sem a API.
 
-```bash
-curl http://localhost:3000/health
-```
+## Repositorio
 
-Listar alertas:
-
-```bash
-curl http://localhost:3000/alerts
-```
-
-Atualizar status de alerta:
-
-```bash
-curl -X PATCH http://localhost:3000/alerts/ALT-1001/status \
-  -H "Content-Type: application/json" \
-  -d '{"status":"COMPLETED","user":"Camila Rocha","reason":"Analise finalizada"}'
-```
-
-Listar investigacoes:
-
-```bash
-curl http://localhost:3000/investigations
-```
-
-Fechar investigacao com sucesso:
-
-```bash
-curl -X POST http://localhost:3000/investigations/INV-5001/close \
-  -H "Content-Type: application/json" \
-  -d '{"user":"Camila Rocha","userRole":"Analista PLD","conclusion":"Indicios documentados e relatorio revisado."}'
-```
-
-Testar bloqueio por relatorio nao revisado:
-
-```bash
-curl -X POST http://localhost:3000/investigations/INV-5002/close \
-  -H "Content-Type: application/json" \
-  -d '{"user":"Bruno Martins","userRole":"Coordenador PLD","conclusion":"Tentativa de fechamento para demonstracao."}'
-```
-
-Resposta esperada para o bloqueio:
-
-```json
-{
-  "success": false,
-  "message": "Report must be reviewed before closing the investigation",
-  "code": "REPORT_NOT_REVIEWED"
-}
-```
-
-Consultar assistente:
-
-```bash
-curl -X POST http://localhost:3000/chatbot/query \
-  -H "Content-Type: application/json" \
-  -d '{"user":"Camila Rocha","investigationId":"INV-5001","question":"Quais evidencias sustentam o risco?"}'
-```
-
-Gerar relatorio mockado:
-
-```bash
-curl http://localhost:3000/reports/INV-5001
-```
-
-Consultar auditoria:
-
-```bash
-curl http://localhost:3000/audit
-```
-
-## Endpoints
-
-- `GET /health`
-- `GET /alerts`
-- `GET /alerts/:alertId`
-- `PATCH /alerts/:alertId/status`
-- `GET /investigations`
-- `GET /investigations/:investigationId`
-- `POST /investigations/:investigationId/close`
-- `POST /chatbot/query`
-- `GET /reports/:investigationId`
-- `GET /audit`
-
-## Padrao de Resposta
-
-Sucesso:
-
-```json
-{
-  "success": true,
-  "data": {}
-}
-```
-
-Erro:
-
-```json
-{
-  "success": false,
-  "message": "Alert not found",
-  "code": "ALERT_NOT_FOUND"
-}
-```
-
-## Dados Mockados
-
-O backend usa repositorios em memoria em `src/shared/database/mock-data.ts`. Ao reiniciar a API, os dados voltam ao estado inicial.
-
-Regras demonstradas:
-
-- CPF e conta sempre mascarados.
-- A IA sugere risco, mas nao decide.
-- Toda resposta do assistente contem evidencias, justificativa e origem.
-- Investigacao so fecha com evidencia, relatorio revisado e papel autorizado.
-- Auditoria registra consultas, status e fechamento.
-
-## Git
-
-O `.gitignore` remove dependencias, builds, caches, logs, arquivos `.env` e artefatos locais. Os documentos `.md` dentro de `.ai/` ficam versionados porque fazem parte da especificacao do projeto.
-
-Quando o workspace do Codex for fechado, a pasta raiz pode ser renomeada de `.ai` para `PLD`. A configuracao Git continua junto porque a pasta `.git` esta dentro da raiz do projeto.
+<https://github.com/CaioVMoraes/PlataformaPrevensaoLavagemDinheiro>

@@ -16,5 +16,11 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-explicit-any": "error"
     }
+  },
+  {
+    files: ["src/**/*.module.ts"],
+    rules: {
+      "@typescript-eslint/no-extraneous-class": "off"
+    }
   }
 );

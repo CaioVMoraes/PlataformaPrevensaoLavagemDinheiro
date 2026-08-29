@@ -22,7 +22,7 @@ export class AuditRepository {
 
   create(input: CreateAuditLogInput): AuditLog {
     const auditLog: AuditLog = {
-      id: `AUD-${3000 + this.auditLogs.length + 1}`,
+      id: `AUD-${String(3000 + this.auditLogs.length + 1)}`,
       occurredAt: new Date().toISOString(),
       ...input,
     };

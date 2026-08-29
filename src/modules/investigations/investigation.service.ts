@@ -97,11 +97,12 @@ export class InvestigationService {
     investigation: Investigation,
     input: CloseInvestigationDto,
   ): void {
-    const isAuthorizedRole =
-      input.userRole === AnalystRole.PLD_ANALYST ||
-      input.userRole === AnalystRole.PLD_COORDINATOR;
+    const authorizedRoles = new Set<AnalystRole>([
+      AnalystRole.PLD_ANALYST,
+      AnalystRole.PLD_COORDINATOR,
+    ]);
 
-    if (!isAuthorizedRole) {
+    if (!authorizedRoles.has(input.userRole)) {
       throw new ForbiddenException({
         message: 'User role is not authorized to close investigations',
         code: 'UNAUTHORIZED_INVESTIGATION_ROLE',

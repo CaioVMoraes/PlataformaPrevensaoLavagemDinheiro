@@ -43,6 +43,7 @@ Thumbs.db
 Desktop.ini
 .idea/
 .vscode/
+.vs/
 *.swp
 *.swo
 
@@ -55,3 +56,6 @@ tmp/
 temp/
 .tmp/
 .cache/
+
+# Local delivery packages
+entrega/

@@ -8,10 +8,11 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "build": "nest build",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings=0",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --max-warnings=0",
     "format": "prettier --write \"src/**/*.ts\" \"*.md\"",
     "test": "jest",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:all": "jest --runInBand && jest --config ./test/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
